@@ -1,9 +1,5 @@
-'''
-Fn to create new deck
-    -no inputs to call
-    -outputs new list of cards
-'''
 def new_deck():
+    """Creates a new desk of cards"""
 
     deck = [] # stores deck during assembly
     cards = list(range(2,9,1))+['10','J','Q','K','A']
@@ -14,3 +10,24 @@ def new_deck():
             new_card = str(card)+suit
             deck.append(new_card)
     return deck
+
+def deal_cards(current_deck):
+    """Deals cards to player and dealer."""
+
+    player_card_1 = rand.choice(current_deck)
+    current_deck.remove(player_card_1)
+
+    player_card_2 = rand.choice(current_deck)
+    current_deck.remove(player_card_2)
+
+    dealer_card_1 = rand.choice(current_deck)
+    current_deck.remove(dealer_card_1)
+
+    dealer_card_2 = rand.choice(current_deck)
+    current_deck.remove(dealer_card_2)
+
+    player_cards = [player_card_1, player_card_2]
+    dealer_cards = [dealer_card_1, dealer_card_2]
+
+    return (player_cards, dealer_cards, current_deck)
+
