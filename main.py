@@ -3,85 +3,79 @@ Blackjack Game
 Austin Bly, 2022
 """
 
-import random as rand
-from card_fns import new_deck, deal_cards
 
-"""
-Gameplay
-"""
+from card_fns import new_deck, deal_cards
+from hit_fns import player_hit, dealer_hit, hand_status
 
 """
 First deal
+
+Initiation of the game. A randomly shuffled deck is acquired and dealt to the player and dealer.
 """
-# get a new deck of cards
-current_deck = new_deck()
 
-# deal the cards
-(player_cards, dealer_cards, current_deck) = deal_cards(current_deck)
+current_deck = new_deck() # Get a new deck of shuffled cards.
 
-# print out the player cards and second computer card
+(player_cards, dealer_cards, current_deck) = deal_cards(current_deck) # Deal cards to player and dealer.
+
+# Show the player's two cards and the dealer's second card
 print("Player cards are: ", player_cards)
 print("Dealer is showing: ", dealer_cards[1])
 
 """
-User decisions until 'stay'
+Player's turn
+ 
+The player decides whether to hit or stay. They continue making this decision until they either bust or stay.
 """
 
-hit_or_stay = ""
+player_action = ""
+player_choices = ["h", "s"] # Identify potential user choices
 
-# repeat hit or stay process until the user 'stays'
-possibilities = ["h", "s"]
+# Ensure user gives valid input
+while player_action not in player_choices or player_action != "s":
 
-# ensure user gives valid input
-while hit_or_stay not in possibilities or hit_or_stay != "s":
+    player_action = input("Hit or stay? (H/S): ").lower()
 
-    hit_or_stay = input("Hit or stay? (H/S): ").lower()
-
-    if hit_or_stay == "h":
-        # call player hit fn
+    if player_action == "h":
         (current_deck, player_cards) = player_hit(current_deck, player_cards)
-    elif hit_or_stay == "s":
+    elif player_action == "s":
         pass
     else:
         pass
 
     print("Player cards are:", player_cards)
 
-    if bust_checker(player_cards)[0] == True:
+    if hand_status(player_cards)[0] == True:
         print("Player busts, dealer wins!")
         break
 
-"""
-Dealer hits until results
-"""
+"""Dealer hits until results"""
+
 print("Dealer cards are", dealer_cards)
 
-while bust_checker(dealer_cards)[1] < 17:
+while hand_status(dealer_cards)[1] < 17:
     (current_deck, dealer_cards) = dealer_hit(current_deck, dealer_cards)
     print("Dealer hits! Dealer cards are: ", dealer_cards)
 
 else:
     pass
 
-"""
-Game Result
-"""
+"""Game Result"""
 
-if bust_checker(player_cards)[1] > bust_checker(dealer_cards)[1]:
+if hand_status(player_cards)[1] > hand_status(dealer_cards)[1]:
     print(
         "Player wins with {p} over dealer total of {d}".format(
-            p=bust_checker(player_cards)[1], d=bust_checker(dealer_cards)[1]
+            p=hand_status(player_cards)[1], d=hand_status(dealer_cards)[1]
         )
     )
-elif bust_checker(player_cards)[1] < bust_checker(dealer_cards)[1]:
+elif hand_status(player_cards)[1] < hand_status(dealer_cards)[1]:
     print(
         "Dealer wins with {d} over player total of {p}".format(
-            p=bust_checker(player_cards)[1], d=bust_checker(dealer_cards)[1]
+            p=hand_status(player_cards)[1], d=hand_status(dealer_cards)[1]
         )
     )
 else:
     print(
         "Push! Dealer has {d} and player has {p}".format(
-            d=bust_checker(dealer_cards)[1], p=bust_checker(player_cards)[1]
+            d=hand_status(dealer_cards)[1], p=hand_status(player_cards)[1]
         )
     )

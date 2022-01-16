@@ -1,3 +1,5 @@
+import random as rand
+
 def new_deck():
     """Creates a new desk of cards"""
 
