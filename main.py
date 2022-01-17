@@ -4,8 +4,13 @@ Austin Bly, 2022
 """
 
 
-from card_fns import new_deck, deal_cards
-from hit_fns import player_hit, dealer_hit, hand_status
+from deck_fns import new_deck, deal_cards
+from hit_fns import player_hit, dealer_hit
+from show_fns import show_player_cards, show_dealer_cards
+from bust_fns import sum_cards_ace_high
+import time
+
+show_dealer = False
 
 """
 First deal
@@ -18,20 +23,22 @@ current_deck = new_deck() # Get a new deck of shuffled cards.
 (player_cards, dealer_cards, current_deck) = deal_cards(current_deck) # Deal cards to player and dealer.
 
 # Show the player's two cards and the dealer's second card
-print("Player cards are: ", player_cards)
-print("Dealer is showing: ", dealer_cards[1])
+show_player_cards(player_cards)
+
+show_dealer_cards(dealer_cards,show_dealer)
+
 
 """
 Player's turn
- 
+
 The player decides whether to hit or stay. They continue making this decision until they either bust or stay.
 """
 
 player_action = ""
 player_choices = ["h", "s"] # Identify potential user choices
 
-# Ensure user gives valid input
-while player_action not in player_choices or player_action != "s":
+
+while player_action not in player_choices or player_action != "s": # Ensure user gives valid input or is not "staying".
 
     player_action = input("Hit or stay? (H/S): ").lower()
 
@@ -42,40 +49,51 @@ while player_action not in player_choices or player_action != "s":
     else:
         pass
 
-    print("Player cards are:", player_cards)
+    show_player_cards(player_cards)
 
-    if hand_status(player_cards)[0] == True:
+    if sum_cards_ace_high(player_cards) > 21:
         print("Player busts, dealer wins!")
         break
+    else:
+        pass
 
-"""Dealer hits until results"""
 
-print("Dealer cards are", dealer_cards)
+"""Dealer hits until exceed 17 or bust"""
+time.sleep(3)
 
-while hand_status(dealer_cards)[1] < 17:
+show_dealer = True
+show_dealer_cards(dealer_cards, show_dealer)
+
+time.sleep(3)
+
+while sum_cards_ace_high(dealer_cards) < 17:
     (current_deck, dealer_cards) = dealer_hit(current_deck, dealer_cards)
-    print("Dealer hits! Dealer cards are: ", dealer_cards)
+    print("Dealer hits!", end = " ")
+    show_dealer_cards(dealer_cards, show_dealer)
+    time.sleep(3)
 
+if sum_cards_ace_high(dealer_cards) > 21:
+    print("Dealer busts!")
 else:
     pass
 
-"""Game Result"""
-
-if hand_status(player_cards)[1] > hand_status(dealer_cards)[1]:
-    print(
-        "Player wins with {p} over dealer total of {d}".format(
-            p=hand_status(player_cards)[1], d=hand_status(dealer_cards)[1]
-        )
-    )
-elif hand_status(player_cards)[1] < hand_status(dealer_cards)[1]:
-    print(
-        "Dealer wins with {d} over player total of {p}".format(
-            p=hand_status(player_cards)[1], d=hand_status(dealer_cards)[1]
-        )
-    )
-else:
-    print(
-        "Push! Dealer has {d} and player has {p}".format(
-            d=hand_status(dealer_cards)[1], p=hand_status(player_cards)[1]
-        )
-    )
+# """Game Result"""
+#
+# if hand_status(player_cards)[1] > hand_status(dealer_cards)[1]:
+#     print(
+#         "Player wins with {p} over dealer total of {d}".format(
+#             p=hand_status(player_cards)[1], d=hand_status(dealer_cards)[1]
+#         )
+#     )
+# elif hand_status(player_cards)[1] < hand_status(dealer_cards)[1]:
+#     print(
+#         "Dealer wins with {d} over player total of {p}".format(
+#             p=hand_status(player_cards)[1], d=hand_status(dealer_cards)[1]
+#         )
+#     )
+# else:
+#     print(
+#         "Push! Dealer has {d} and player has {p}".format(
+#             d=hand_status(dealer_cards)[1], p=hand_status(player_cards)[1]
+#         )
+#     )
